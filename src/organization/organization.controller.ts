@@ -56,6 +56,7 @@ export class OrganizationController {
   @ApiResponse({
     status: 200,
     type: OrganizationVm,
+    isArray: true,
     description: 'Get all Organizations successfully',
   })
   @ApiResponse({

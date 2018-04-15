@@ -11,6 +11,7 @@ export class CropVm extends SharedModelVm {
   @ApiModelPropertyOptional()
   name?: string;
   @ApiModelPropertyOptional({
+    type: String,
     isArray: true,
   })
   variety?: string[];
@@ -22,6 +23,7 @@ export class CropParams {
   @ApiModelPropertyOptional()
   name?: string;
   @ApiModelPropertyOptional({
+    type: String,
     isArray: true,
   })
   variety?: string[];

@@ -24,8 +24,6 @@ export class OrganizationVm extends SharedModelVm {
 export class OrganizationParams {
   @ApiModelPropertyOptional()
   name?: string;
-  @ApiModelPropertyOptional({
-    enum: ['Purchased', 'Donated', 'Internal'],
-  })
-  orgType?: OrganizationType;
+  @ApiModelPropertyOptional()
+  orgType?: string;
 }

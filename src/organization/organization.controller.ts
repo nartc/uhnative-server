@@ -29,7 +29,7 @@ export class OrganizationController {
     operationId: 'Organization_RegisterOrganization',
   })
   async registerOrganization(@Body() organizationParams: OrganizationParams): Promise<IOrganizationModel> {
-    return await this._organizationService.createFromBody(organizationParams);
+    return await this._organizationService.createOrganization(organizationParams);
   }
 
   @Put()

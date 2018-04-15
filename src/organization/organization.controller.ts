@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { OrganizationService } from './organization.service';
 import { IOrganizationModel, OrganizationParams, OrganizationVm } from './models/organization.model';
@@ -70,5 +70,24 @@ export class OrganizationController {
   })
   async getAllOrganizations(): Promise<IOrganizationModel[]> {
     return await this._organizationService.getAll();
+  }
+
+  @Get(':id')
+  @ApiResponse({
+    status: 200,
+    type: OrganizationVm,
+    description: 'Get Organization by Id successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    type: ApiException,
+    description: 'Bad Request',
+  })
+  @ApiOperation({
+    title: 'GET Organization by Id',
+    operationId: 'Organization_GetById',
+  })
+  async getById(@Param('id') id: string): Promise<IOrganizationModel> {
+    return await this._organizationService.getById(id);
   }
 }

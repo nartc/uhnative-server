@@ -1,0 +1,9 @@
+express:
+  host: localhost
+  port: 8080
+
+mongo:
+  connection_string: <mongo_uri>
+
+jwt:
+  secret: <jwt_secret>

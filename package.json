@@ -1,0 +1,76 @@
+{
+  "name": "uh-native-server",
+  "version": "1.0.0",
+  "description": "description",
+  "author": "nartc",
+  "license": "MIT",
+  "scripts": {
+    "format": "prettier --write \"**/*.ts\"",
+    "start": "ts-node -r tsconfig-paths/register src/main.ts",
+    "start:dev": "nodemon",
+    "prestart:prod": "rm -rf dist && tsc",
+    "start:prod": "node dist/main.js",
+    "test": "jest",
+    "test:cov": "jest --coverage",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "heroku-prebuild": "export NPM_CONFIG_PRODUCTION=false; export NODE_ENV=development; npm install --only=dev --dev",
+    "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production;"
+  },
+  "dependencies": {
+    "@nestjs/common": "4.6.6",
+    "@nestjs/core": "4.6.6",
+    "@nestjs/microservices": "4.6.6",
+    "@nestjs/mongoose": "3.0.1",
+    "@nestjs/swagger": "1.2.2",
+    "@nestjs/testing": "4.6.6",
+    "@nestjs/websockets": "4.6.6",
+    "bcryptjs": "2.4.3",
+    "class-transformer": "0.1.9",
+    "class-validator": "0.8.5",
+    "config": "1.30.0",
+    "reflect-metadata": "0.1.12",
+    "rxjs": "5.5.10",
+    "js-yaml": "3.11.0",
+    "jsonwebtoken": "8.2.0",
+    "lodash": "4.17.5",
+    "mongoose": "5.0.12",
+    "nest-router": "1.0.5",
+    "passport": "0.4.0",
+    "passport-jwt": "4.0.0",
+    "typescript": "2.8.1"
+  },
+  "devDependencies": {
+    "@types/express": "4.11.1",
+    "@types/jest": "22.2.3",
+    "@types/node": "9.6.5",
+    "@types/bcryptjs": "2.4.1",
+    "@types/config": "0.0.34",
+    "@types/jsonwebtoken": "7.2.6",
+    "@types/lodash": "4.14.106",
+    "@types/mongoose": "5.0.9",
+    "@types/passport": "0.4.4",
+    "@types/passport-jwt": "3.0.1",
+    "@types/supertest": "2.0.4",
+    "jest": "22.4.3",
+    "nodemon": "1.17.3",
+    "prettier": "1.12.0",
+    "supertest": "3.0.0",
+    "ts-jest": "22.4.3",
+    "ts-node": "5.0.1",
+    "tsconfig-paths": "3.3.0",
+    "tslint": "5.9.1"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".spec.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "../coverage"
+  }
+}

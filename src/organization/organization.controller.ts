@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { OrganizationService } from './organization.service';
 import { IOrganizationModel, OrganizationParams, OrganizationVm } from './models/organization.model';
@@ -29,6 +29,9 @@ export class OrganizationController {
     operationId: 'Organization_RegisterOrganization',
   })
   async registerOrganization(@Body() organizationParams: OrganizationParams): Promise<IOrganizationModel> {
+    if (!organizationParams.name || !organizationParams.orgType) {
+      throw new HttpException('Invalid request parameters', HttpStatus.BAD_REQUEST);
+    }
     return await this._organizationService.createOrganization(organizationParams);
   }
 
@@ -89,5 +92,29 @@ export class OrganizationController {
   })
   async getById(@Param('id') id: string): Promise<IOrganizationModel> {
     return await this._organizationService.getById(id);
+  }
+
+  @Delete(':id')
+  @ApiResponse({
+    status: 200,
+    type: OrganizationVm,
+    description: 'Remove Organization by Id successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    type: ApiException,
+    description: 'Bad Request',
+  })
+  @ApiOperation({
+    title: 'DELETE Organization by Id',
+    operationId: 'Organization_DeleteOrganization',
+  })
+  async deleteOrganization(@Param('id') id: string): Promise<IOrganizationModel> {
+    const organization: IOrganizationModel = await this._organizationService.getById(id);
+    if (!organization || organization === null) {
+      throw new HttpException('Organization not found', HttpStatus.NOT_FOUND);
+    }
+
+    return await this._organizationService.delete(id);
   }
 }

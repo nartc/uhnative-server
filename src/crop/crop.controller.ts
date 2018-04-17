@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { CropService } from './crop.service';
 import { CropParams, CropVm, ICropModel } from './models/crop.model';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
@@ -48,7 +48,7 @@ export class CropController {
     operationId: 'Crop_CreateCrop',
   })
   async createCrop(@Body() cropParams: CropParams): Promise<ICropModel> {
-    return await this._cropService.createFromBody(cropParams);
+    return await this._cropService.createCrop(cropParams);
   }
 
   @Get(':id')
@@ -87,5 +87,29 @@ export class CropController {
   })
   async updateCrop(@Body() updatedCrop: CropVm): Promise<ICropModel> {
     return await this._cropService.updateFromBody(updatedCrop);
+  }
+
+  @Delete(':id')
+  @ApiResponse({
+    status: 200,
+    type: CropVm,
+    description: 'Remove Crop by Id successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    type: ApiException,
+    description: 'Bad Request',
+  })
+  @ApiOperation({
+    title: 'DELETE Crop by Id',
+    operationId: 'Crop_DeleteCrop',
+  })
+  async deleteCrop(@Param('id') id: string): Promise<ICropModel> {
+    const crop: ICropModel = await this._cropService.getById(id);
+    if (!crop || crop === null) {
+      throw new HttpException('Crop not found', HttpStatus.NOT_FOUND);
+    }
+
+    return await this._cropService.delete(id);
   }
 }

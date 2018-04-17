@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { FarmService } from './farm.service';
 import { ApiException } from '../shared/models/shared.model';
@@ -15,6 +15,7 @@ export class FarmController {
   @ApiResponse({
     status: 200,
     type: FarmVm,
+    isArray: true,
     description: 'Get all Farms successfully',
   })
   @ApiResponse({
@@ -68,5 +69,48 @@ export class FarmController {
   })
   async updateFarm(@Body() updatedFarm: FarmVm): Promise<IFarmModel> {
     return await this._farmService.updateFromBody(updatedFarm);
+  }
+
+  @Get(':id')
+  @ApiResponse({
+    status: 200,
+    type: FarmVm,
+    description: 'Get Farm by Id successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    type: ApiException,
+    description: 'Bad Request',
+  })
+  @ApiOperation({
+    title: 'GET Farm by Id',
+    operationId: 'Farm_GetById',
+  })
+  async getById(@Param('id') id: string): Promise<IFarmModel> {
+    return await this._farmService.getById(id);
+  }
+
+  @Delete(':id')
+  @ApiResponse({
+    status: 200,
+    type: FarmVm,
+    description: 'Remove Farm by Id successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    type: ApiException,
+    description: 'Bad Request',
+  })
+  @ApiOperation({
+    title: 'DELETE Farm by Id',
+    operationId: 'Farm_DeleteFarm',
+  })
+  async deleteFarm(@Param('id') id: string): Promise<IFarmModel> {
+    const farm: IFarmModel = await this._farmService.getById(id);
+    if (!farm || farm === null) {
+      throw new HttpException('Farm not found', HttpStatus.NOT_FOUND);
+    }
+
+    return await this._farmService.delete(id);
   }
 }

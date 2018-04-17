@@ -12,7 +12,7 @@ import { IHarvesterModel } from '../harvester/models/harvester.model';
 import { IOrganizationModel } from '../organization/models/organization.model';
 import { IHarvestModel } from '../harvest/models/harvest.model';
 import { HarvestService } from '../harvest/harvest.service';
-import { findIndex } from 'lodash';
+import { indexOf } from 'lodash';
 
 @Component()
 export class EntryService extends SharedService<IEntryModel> {
@@ -86,8 +86,7 @@ export class EntryService extends SharedService<IEntryModel> {
     existedEntry.comments = entryParams.comments;
     existedEntry.selectedVariety = entryParams.selectedVariety;
 
-    harvest.entries.splice(
-      findIndex(harvest.entries, (entry: IEntryModel) => entry._id === existedEntry._id), 1, existedEntry);
+    harvest.entries.splice(indexOf(harvest.entries, existedEntry), 1, existedEntry);
 
     await harvest.save();
     return this._entryModel.findByIdAndUpdate(entryId, existedEntry, { new: true }).exec();

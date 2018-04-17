@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiUseTags } from '@nestjs/swagger';
 import { HarvesterService } from './harvester.service';
 import { HarvesterParams, HarvesterVm, IHarvesterModel } from './models/harvester.model';
@@ -15,6 +15,7 @@ export class HarvesterController {
   @ApiResponse({
     status: 200,
     type: HarvesterVm,
+    isArray: true,
     description: 'Get all Harvesters successfully',
   })
   @ApiResponse({
@@ -68,5 +69,48 @@ export class HarvesterController {
   })
   async updateHarvester(@Body() updatedHarvester: HarvesterVm): Promise<IHarvesterModel> {
     return await this._harvesterService.updateFromBody(updatedHarvester);
+  }
+
+  @Get(':id')
+  @ApiResponse({
+    status: 200,
+    type: HarvesterVm,
+    description: 'Get Harvester by Id successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    type: ApiException,
+    description: 'Bad Request',
+  })
+  @ApiOperation({
+    title: 'GET Harvester by Id',
+    operationId: 'Harvester_GetById',
+  })
+  async getById(@Param('id') id: string): Promise<IHarvesterModel> {
+    return await this._harvesterService.getById(id);
+  }
+
+  @Delete(':id')
+  @ApiResponse({
+    status: 200,
+    type: HarvesterVm,
+    description: 'Remove Harvester by Id successfully',
+  })
+  @ApiResponse({
+    status: 400,
+    type: ApiException,
+    description: 'Bad Request',
+  })
+  @ApiOperation({
+    title: 'DELETE Harvester by Id',
+    operationId: 'Harvester_DeleteHarvester',
+  })
+  async deleteHarvester(@Param('id') id: string): Promise<IHarvesterModel> {
+    const harvester: IHarvesterModel = await this._harvesterService.getById(id);
+    if (!harvester || harvester === null) {
+      throw new HttpException('Harvester not found', HttpStatus.NOT_FOUND);
+    }
+
+    return await this._harvesterService.delete(id);
   }
 }

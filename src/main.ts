@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { get } from 'config';
 
 const port = process.env.PORT || get('express.port');
+const environmentHosting = process.env.NODE_ENV || 'Development';
 
 async function bootstrap() {
   const app = await NestFactory.create(ApplicationModule, { cors: true });
@@ -28,7 +29,17 @@ async function bootstrap() {
   app.use('/api/docs/swagger.json', (req: Request, res: Response) => {
     res.send(swaggerDoc);
   });
-  SwaggerModule.setup('/api/docs', app, swaggerDoc);
+
+  SwaggerModule.setup('/api/docs', app, null, {
+    explorer: true,
+    customSiteTitle: 'UHSTL API Documentation',
+    swaggerUrl: environmentHosting === 'Development'
+      ? `${get('express.host_name')}/api/docs/swagger.json`
+      : `${process.env.HOST}/api/docs/swagger.json`,
+    swaggerOptions: {
+      docExpansion: 'none',
+    },
+  });
 
   await app.listen(port);
 }

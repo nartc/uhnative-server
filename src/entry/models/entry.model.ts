@@ -8,6 +8,7 @@ export interface IEntryModel extends ISharedModel {
   pounds?: number;
   comments?: string;
   selectedVariety?: string;
+  priceTotal?: number;
   crop?: ICropModel;
   harvester?: IHarvesterModel;
   recipient?: IOrganizationModel;
@@ -20,6 +21,8 @@ export class EntryVm extends SharedModelVm {
   comments?: string;
   @ApiModelPropertyOptional()
   selectedVariety?: string;
+  @ApiModelPropertyOptional()
+  priceTotal?: number;
   @ApiModelPropertyOptional({
     type: CropVm,
   })
@@ -37,6 +40,8 @@ export class EntryVm extends SharedModelVm {
 export class EntryParams {
   @ApiModelProperty()
   pounds: number;
+  @ApiModelProperty()
+  priceTotal: number;
   @ApiModelPropertyOptional()
   cropId?: string;
   @ApiModelPropertyOptional()

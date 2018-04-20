@@ -27,8 +27,8 @@ export class EntryController {
     title: 'POST new Entry',
     operationId: 'Entry_CreateEntry',
   })
-  async createEntry(@Body() entryParams: EntryParams): Promise<IEntryModel> {
-    return await this._entryService.createEntry(entryParams);
+  async createEntry(@Body() entryParams: EntryParams, @Query('harvestId') harvestId: string): Promise<IEntryModel> {
+    return await this._entryService.createEntry(entryParams, harvestId);
   }
 
   @Put('update/:id')

@@ -25,7 +25,12 @@ export class EntryService extends SharedService<IEntryModel> {
     super(_entryModel);
   }
 
-  async createEntry(entryParams: EntryParams): Promise<IEntryModel> {
+  async createEntry(entryParams: EntryParams, harvestId: string): Promise<IEntryModel> {
+    const harvest: IHarvestModel = await this._harvestService.getById(harvestId);
+    if (!harvest || harvest === null) {
+      throw new HttpException('Harvest not found', HttpStatus.BAD_REQUEST);
+    }
+
     const crop: ICropModel = await this._cropService.getById(entryParams.cropId);
     if (!crop || crop === null) {
       throw new HttpException('Crop not found', HttpStatus.BAD_REQUEST);
@@ -45,12 +50,17 @@ export class EntryService extends SharedService<IEntryModel> {
       pounds: entryParams.pounds,
       comments: entryParams.comments,
       selectedVariety: entryParams.selectedVariety,
+      priceTotal: entryParams.priceTotal,
       crop,
       harvester,
       recipient,
     };
 
-    return this._entryModel.create(newEntry);
+    const entry: IEntryModel = await this._entryModel.create(newEntry);
+    harvest.entries.push(entry);
+    await harvest.save();
+
+    return entry;
   }
 
   async updateEntry(harvestId: string, entryId: string, entryParams: EntryParams): Promise<IEntryModel> {
@@ -87,8 +97,8 @@ export class EntryService extends SharedService<IEntryModel> {
     existedEntry.selectedVariety = entryParams.selectedVariety;
 
     harvest.entries.splice(indexOf(harvest.entries, existedEntry), 1, existedEntry);
-
     await harvest.save();
+
     return this._entryModel.findByIdAndUpdate(entryId, existedEntry, { new: true }).exec();
   }
 }

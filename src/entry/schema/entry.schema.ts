@@ -12,6 +12,7 @@ export const EntrySchema = new Schema({
   comments: String,
   recipient: OrganizationSchema,
   selectedVariety: String,
+  priceTotal: Number,
 }, schemaOptions);
 
 export const Entry: Model<IEntryModel> = model<IEntryModel>('Entry', EntrySchema);
